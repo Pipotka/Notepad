@@ -33,8 +33,8 @@ namespace notepad
         private void NotepadForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             DialogResult message = MessageBox.Show(
-                "Сохранить текущий документ перед выходом?",
-                "Выход из программы",
+                "РЎРѕС…СЂР°РЅРёС‚СЊ С‚РµРєСѓС‰РёР№ РґРѕРєСѓРјРµРЅС‚ РїРµСЂРµРґ РІС‹С…РѕРґРѕРј?",
+                "Р’С‹С…РѕРґ РёР· РїСЂРѕРіСЂР°РјРјС‹",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
             if (message == DialogResult.Yes)
             {
