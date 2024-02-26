@@ -148,18 +148,18 @@
             ColumnLable.AutoSize = true;
             ColumnLable.Location = new Point(108, 4);
             ColumnLable.Name = "ColumnLable";
-            ColumnLable.Size = new Size(61, 15);
+            ColumnLable.Size = new Size(63, 15);
             ColumnLable.TabIndex = 3;
-            ColumnLable.Text = "столбец 1";
+            ColumnLable.Text = "Столбец 1";
             // 
             // LineLable
             // 
             LineLable.AutoSize = true;
             LineLable.Location = new Point(49, 4);
             LineLable.Name = "LineLable";
-            LineLable.Size = new Size(53, 15);
+            LineLable.Size = new Size(55, 15);
             LineLable.TabIndex = 1;
-            LineLable.Text = "строка 1";
+            LineLable.Text = "Строка 1";
             // 
             // NotepadWindow
             // 
