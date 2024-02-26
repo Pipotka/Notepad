@@ -2,7 +2,8 @@ namespace notepad
 {
     public partial class NotepadWindow : Form
     {
-        public string _filePath = null;
+        public string filePath = null;
+        public bool textChanged = false;
         public NotepadWindow()
         {
             InitializeComponent();
@@ -10,7 +11,6 @@ namespace notepad
             colorDialog.FullOpen = true;
             colorDialog.Color = MainTextBox.BackColor;
         }
-
         private void FontViwe_Click(object sender, EventArgs e)
         {
             if (fontDialog.ShowDialog() == DialogResult.Cancel)
@@ -20,7 +20,6 @@ namespace notepad
             MainTextBox.Font = fontDialog.Font;
             MainTextBox.ForeColor = fontDialog.Color;
         }
-
         private void BackgroundColorViwe_Click(object sender, EventArgs e)
         {
             if (colorDialog.ShowDialog() == DialogResult.Cancel)
@@ -29,34 +28,35 @@ namespace notepad
             }
             MainTextBox.BackColor = colorDialog.Color;
         }
-
         private void NotepadForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DialogResult message = MessageBox.Show(
+            if (textChanged)
+            {
+                DialogResult message = MessageBox.Show(
                 "Сохранить текущий документ перед выходом?",
                 "Выход из программы",
-                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-            if (message == DialogResult.Yes)
-            {
-                if (_filePath == null)
+                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (message == DialogResult.Yes)
                 {
-                    if (SaveFileDialog.ShowDialog() == DialogResult.Cancel)
+                    if (filePath == null)
                     {
-                        return;
+                        if (SaveFileDialog.ShowDialog() == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+                        System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
                     }
-                    System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
+                    else
+                    {
+                        System.IO.File.WriteAllText(filePath, MainTextBox.Text);
+                    }
                 }
-                else
+                else if (message == DialogResult.Cancel)
                 {
-                    System.IO.File.WriteAllText(_filePath, MainTextBox.Text);
+                    e.Cancel = true;
                 }
-            }
-            else if (message == DialogResult.Cancel)
-            {
-                e.Cancel = true;
             }
         }
-
         private void SafeAsFile_Click(object sender, EventArgs e)
         {
             if (SaveFileDialog.ShowDialog() == DialogResult.Cancel)
@@ -64,28 +64,29 @@ namespace notepad
                 return;
             }
             System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
-            _filePath = OpenFileDialog.FileName;
-            this.Text = _filePath;
+            filePath = OpenFileDialog.FileName;
+            this.Text = filePath;
+            textChanged = false;
         }
-
         private void SafeFile_Click(object sender, EventArgs e)
         {
-            if (_filePath == null)
+            if (filePath == null)
             {
                 if (SaveFileDialog.ShowDialog() == DialogResult.Cancel)
                 {
                     return;
                 }
                 System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
-                _filePath = OpenFileDialog.FileName;
-                this.Text = _filePath;
+                filePath = OpenFileDialog.FileName;
+                this.Text = filePath;
+                textChanged = false;
             }
             else
             {
-                System.IO.File.WriteAllText(_filePath, MainTextBox.Text);
+                System.IO.File.WriteAllText(filePath, MainTextBox.Text);
+                textChanged = false;
             }
         }
-
         private void OpenFile_Click(object sender, EventArgs e)
         {
             if (OpenFileDialog.ShowDialog() == DialogResult.Cancel)
@@ -93,8 +94,19 @@ namespace notepad
                 return;
             }
             MainTextBox.Text = System.IO.File.ReadAllText(OpenFileDialog.FileName);
-            _filePath = OpenFileDialog.FileName;
-            this.Text = _filePath;
+            filePath = OpenFileDialog.FileName;
+            this.Text = filePath;
+        }
+        private void MainTextBox_TextChanged(object sender, EventArgs e)
+        {
+            textChanged = true;
+            int Line;
+            int Column, ColumnOffset;
+            Line = MainTextBox.GetLineFromCharIndex(MainTextBox.SelectionStart);
+            ColumnOffset = Line;
+            Column = (MainTextBox.SelectionStart - ColumnOffset) - (MainTextBox.GetFirstCharIndexFromLine(Line) - ColumnOffset);
+            LineLable.Text = $"Строка {Line + 1}";
+            ColumnLable.Text = $"Столбец {Column + 1}";
         }
     }
 }

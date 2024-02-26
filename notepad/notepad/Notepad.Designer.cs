@@ -41,17 +41,22 @@
             colorDialog = new ColorDialog();
             SaveFileDialog = new SaveFileDialog();
             OpenFileDialog = new OpenFileDialog();
+            panel1 = new Panel();
+            ColumnLable = new Label();
+            LineLable = new Label();
             Menu.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // MainTextBox
             // 
-            MainTextBox.Dock = DockStyle.Fill;
+            MainTextBox.Dock = DockStyle.Top;
             MainTextBox.Location = new Point(0, 24);
             MainTextBox.Multiline = true;
             MainTextBox.Name = "MainTextBox";
-            MainTextBox.Size = new Size(1434, 610);
+            MainTextBox.Size = new Size(1434, 575);
             MainTextBox.TabIndex = 0;
+            MainTextBox.TextChanged += MainTextBox_TextChanged;
             // 
             // Menu
             // 
@@ -128,11 +133,40 @@
             OpenFileDialog.Filter = "Текстовые файлы(*.txt)|*.txt";
             OpenFileDialog.InitialDirectory = "Рабочий стол";
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(ColumnLable);
+            panel1.Controls.Add(LineLable);
+            panel1.Dock = DockStyle.Bottom;
+            panel1.Location = new Point(0, 598);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1434, 36);
+            panel1.TabIndex = 2;
+            // 
+            // ColumnLable
+            // 
+            ColumnLable.AutoSize = true;
+            ColumnLable.Location = new Point(108, 4);
+            ColumnLable.Name = "ColumnLable";
+            ColumnLable.Size = new Size(61, 15);
+            ColumnLable.TabIndex = 3;
+            ColumnLable.Text = "столбец 1";
+            // 
+            // LineLable
+            // 
+            LineLable.AutoSize = true;
+            LineLable.Location = new Point(49, 4);
+            LineLable.Name = "LineLable";
+            LineLable.Size = new Size(53, 15);
+            LineLable.TabIndex = 1;
+            LineLable.Text = "строка 1";
+            // 
             // NotepadWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1434, 634);
+            Controls.Add(panel1);
             Controls.Add(MainTextBox);
             Controls.Add(Menu);
             MainMenuStrip = Menu;
@@ -141,6 +175,8 @@
             FormClosing += NotepadForm_FormClosing;
             Menu.ResumeLayout(false);
             Menu.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -160,5 +196,8 @@
         private ColorDialog colorDialog;
         private SaveFileDialog SaveFileDialog;
         private OpenFileDialog OpenFileDialog;
+        private Panel panel1;
+        private Label LineLable;
+        private Label ColumnLable;
     }
 }
