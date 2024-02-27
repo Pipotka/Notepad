@@ -4,6 +4,8 @@ namespace notepad
     {
         public string filePath = null;
         public bool textChanged = false;
+        public int numberOfSymbols = 0;
+
         public NotepadWindow()
         {
             InitializeComponent();
@@ -107,6 +109,22 @@ namespace notepad
             Column = (MainTextBox.SelectionStart - ColumnOffset) - (MainTextBox.GetFirstCharIndexFromLine(Line) - ColumnOffset);
             LineLable.Text = $"Строка {Line + 1}";
             ColumnLable.Text = $"Столбец {Column + 1}";
+        }
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            int SymbolsPerMinute;
+            int Seconds = 3;
+            SymbolsPerMinute = (numberOfSymbols / Seconds) * 20;
+            SymbolsPerMinuteLable.Text = $"Символов в минуту: {SymbolsPerMinute};";
+            numberOfSymbols = 0;
+        }
+        private void MainTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            numberOfSymbols++;
+        }
+        private void NotepadWindow_Load(object sender, EventArgs e)
+        {
+            timer.Start();
         }
     }
 }

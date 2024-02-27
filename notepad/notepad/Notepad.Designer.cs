@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             MainTextBox = new TextBox();
             Menu = new MenuStrip();
             File = new ToolStripMenuItem();
@@ -42,8 +43,10 @@
             SaveFileDialog = new SaveFileDialog();
             OpenFileDialog = new OpenFileDialog();
             panel1 = new Panel();
+            SymbolsPerMinuteLable = new Label();
             ColumnLable = new Label();
             LineLable = new Label();
+            timer = new System.Windows.Forms.Timer(components);
             Menu.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -57,6 +60,7 @@
             MainTextBox.Size = new Size(1434, 610);
             MainTextBox.TabIndex = 0;
             MainTextBox.TextChanged += MainTextBox_TextChanged;
+            MainTextBox.KeyPress += MainTextBox_KeyPress;
             // 
             // Menu
             // 
@@ -135,6 +139,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(SymbolsPerMinuteLable);
             panel1.Controls.Add(ColumnLable);
             panel1.Controls.Add(LineLable);
             panel1.Dock = DockStyle.Bottom;
@@ -143,10 +148,19 @@
             panel1.Size = new Size(1434, 29);
             panel1.TabIndex = 2;
             // 
+            // SymbolsPerMinuteLable
+            // 
+            SymbolsPerMinuteLable.AutoSize = true;
+            SymbolsPerMinuteLable.Location = new Point(3, 5);
+            SymbolsPerMinuteLable.Name = "SymbolsPerMinuteLable";
+            SymbolsPerMinuteLable.Size = new Size(131, 15);
+            SymbolsPerMinuteLable.TabIndex = 4;
+            SymbolsPerMinuteLable.Text = "Символов в минуту: 0;";
+            // 
             // ColumnLable
             // 
             ColumnLable.AutoSize = true;
-            ColumnLable.Location = new Point(108, 4);
+            ColumnLable.Location = new Point(206, 5);
             ColumnLable.Name = "ColumnLable";
             ColumnLable.Size = new Size(63, 15);
             ColumnLable.TabIndex = 3;
@@ -155,11 +169,16 @@
             // LineLable
             // 
             LineLable.AutoSize = true;
-            LineLable.Location = new Point(49, 4);
+            LineLable.Location = new Point(147, 5);
             LineLable.Name = "LineLable";
             LineLable.Size = new Size(55, 15);
             LineLable.TabIndex = 1;
             LineLable.Text = "Строка 1";
+            // 
+            // timer
+            // 
+            timer.Interval = 3000;
+            timer.Tick += timer_Tick;
             // 
             // NotepadWindow
             // 
@@ -173,6 +192,7 @@
             Name = "NotepadWindow";
             Text = "Notepad new text";
             FormClosing += NotepadForm_FormClosing;
+            Load += NotepadWindow_Load;
             Menu.ResumeLayout(false);
             Menu.PerformLayout();
             panel1.ResumeLayout(false);
@@ -199,5 +219,7 @@
         private Panel panel1;
         private Label LineLable;
         private Label ColumnLable;
+        private System.Windows.Forms.Timer timer;
+        private Label SymbolsPerMinuteLable;
     }
 }
