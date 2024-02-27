@@ -50,11 +50,11 @@
             // 
             // MainTextBox
             // 
-            MainTextBox.Dock = DockStyle.Top;
+            MainTextBox.Dock = DockStyle.Fill;
             MainTextBox.Location = new Point(0, 24);
             MainTextBox.Multiline = true;
             MainTextBox.Name = "MainTextBox";
-            MainTextBox.Size = new Size(1434, 575);
+            MainTextBox.Size = new Size(1434, 610);
             MainTextBox.TabIndex = 0;
             MainTextBox.TextChanged += MainTextBox_TextChanged;
             // 
@@ -138,9 +138,9 @@
             panel1.Controls.Add(ColumnLable);
             panel1.Controls.Add(LineLable);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 598);
+            panel1.Location = new Point(0, 605);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1434, 36);
+            panel1.Size = new Size(1434, 29);
             panel1.TabIndex = 2;
             // 
             // ColumnLable
