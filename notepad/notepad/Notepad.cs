@@ -35,8 +35,8 @@ namespace notepad
             if (textChanged)
             {
                 DialogResult message = MessageBox.Show(
-                "Сохранить текущий документ перед выходом?",
-                "Выход из программы",
+                "Сохранить текущий документ перед выходом из супер блокнота?",
+                "Выход из программы.",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (message == DialogResult.Yes)
                 {
