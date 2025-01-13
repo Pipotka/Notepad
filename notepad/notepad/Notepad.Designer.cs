@@ -189,6 +189,7 @@
             Controls.Add(MainTextBox);
             Controls.Add(Menu);
             MainMenuStrip = Menu;
+            MinimumSize = new Size(300, 400);
             Name = "NotepadWindow";
             Text = "Notepad new text";
             FormClosing += NotepadForm_FormClosing;
