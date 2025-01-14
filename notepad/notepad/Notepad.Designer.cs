@@ -42,13 +42,13 @@
             colorDialog = new ColorDialog();
             SaveFileDialog = new SaveFileDialog();
             OpenFileDialog = new OpenFileDialog();
-            panel1 = new Panel();
-            SymbolsPerMinuteLable = new Label();
-            ColumnLable = new Label();
-            LineLable = new Label();
             timer = new System.Windows.Forms.Timer(components);
+            statusStrip1 = new StatusStrip();
+            toolStripStatusSymbolsPerMinuteLabel = new ToolStripStatusLabel();
+            toolStripStatusLineLabel = new ToolStripStatusLabel();
+            toolStripStatusColumnLabel = new ToolStripStatusLabel();
             Menu.SuspendLayout();
-            panel1.SuspendLayout();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // MainTextBox
@@ -114,14 +114,14 @@
             FontViwe.Name = "FontViwe";
             FontViwe.Size = new Size(129, 22);
             FontViwe.Text = "Шрифт";
-            FontViwe.Click += FontViwe_Click;
+            FontViwe.Click += FontView_Click;
             // 
             // BackgroundColorViwe
             // 
             BackgroundColorViwe.Name = "BackgroundColorViwe";
             BackgroundColorViwe.Size = new Size(129, 22);
             BackgroundColorViwe.Text = "ЦветФона";
-            BackgroundColorViwe.Click += BackgroundColorViwe_Click;
+            BackgroundColorViwe.Click += BackgroundColorView_Click;
             // 
             // SaveFileDialog
             // 
@@ -137,55 +137,44 @@
             OpenFileDialog.Filter = "Текстовые файлы(*.txt)|*.txt";
             OpenFileDialog.InitialDirectory = "Рабочий стол";
             // 
-            // panel1
-            // 
-            panel1.Controls.Add(SymbolsPerMinuteLable);
-            panel1.Controls.Add(ColumnLable);
-            panel1.Controls.Add(LineLable);
-            panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(0, 605);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1434, 29);
-            panel1.TabIndex = 2;
-            // 
-            // SymbolsPerMinuteLable
-            // 
-            SymbolsPerMinuteLable.AutoSize = true;
-            SymbolsPerMinuteLable.Location = new Point(3, 5);
-            SymbolsPerMinuteLable.Name = "SymbolsPerMinuteLable";
-            SymbolsPerMinuteLable.Size = new Size(131, 15);
-            SymbolsPerMinuteLable.TabIndex = 4;
-            SymbolsPerMinuteLable.Text = "Символов в минуту: 0;";
-            // 
-            // ColumnLable
-            // 
-            ColumnLable.AutoSize = true;
-            ColumnLable.Location = new Point(206, 5);
-            ColumnLable.Name = "ColumnLable";
-            ColumnLable.Size = new Size(63, 15);
-            ColumnLable.TabIndex = 3;
-            ColumnLable.Text = "Столбец 1";
-            // 
-            // LineLable
-            // 
-            LineLable.AutoSize = true;
-            LineLable.Location = new Point(147, 5);
-            LineLable.Name = "LineLable";
-            LineLable.Size = new Size(55, 15);
-            LineLable.TabIndex = 1;
-            LineLable.Text = "Строка 1";
-            // 
             // timer
             // 
             timer.Interval = 3000;
             timer.Tick += timer_Tick;
+            // 
+            // statusStrip1
+            // 
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusSymbolsPerMinuteLabel, toolStripStatusLineLabel, toolStripStatusColumnLabel });
+            statusStrip1.Location = new Point(0, 612);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(1434, 22);
+            statusStrip1.TabIndex = 3;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusSymbolsPerMinuteLabel
+            // 
+            toolStripStatusSymbolsPerMinuteLabel.Name = "toolStripStatusSymbolsPerMinuteLabel";
+            toolStripStatusSymbolsPerMinuteLabel.Size = new Size(131, 17);
+            toolStripStatusSymbolsPerMinuteLabel.Text = "Символов в минуту: 0;";
+            // 
+            // toolStripStatusLineLabel
+            // 
+            toolStripStatusLineLabel.Name = "toolStripStatusLineLabel";
+            toolStripStatusLineLabel.Size = new Size(58, 17);
+            toolStripStatusLineLabel.Text = "Строка 1;";
+            // 
+            // toolStripStatusColumnLabel
+            // 
+            toolStripStatusColumnLabel.Name = "toolStripStatusColumnLabel";
+            toolStripStatusColumnLabel.Size = new Size(66, 17);
+            toolStripStatusColumnLabel.Text = "Столбец 1;";
             // 
             // NotepadWindow
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1434, 634);
-            Controls.Add(panel1);
+            Controls.Add(statusStrip1);
             Controls.Add(MainTextBox);
             Controls.Add(Menu);
             MainMenuStrip = Menu;
@@ -196,8 +185,8 @@
             Load += NotepadWindow_Load;
             Menu.ResumeLayout(false);
             Menu.PerformLayout();
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -217,10 +206,10 @@
         private ColorDialog colorDialog;
         private SaveFileDialog SaveFileDialog;
         private OpenFileDialog OpenFileDialog;
-        private Panel panel1;
-        private Label LineLable;
-        private Label ColumnLable;
         private System.Windows.Forms.Timer timer;
-        private Label SymbolsPerMinuteLable;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel toolStripStatusSymbolsPerMinuteLabel;
+        private ToolStripStatusLabel toolStripStatusLineLabel;
+        private ToolStripStatusLabel toolStripStatusColumnLabel;
     }
 }
