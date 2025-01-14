@@ -1,46 +1,126 @@
+using System.Text.Json;
+using WinForms.Logic;
+using WinForms.Logic.Extensions;
+
 namespace notepad
 {
     public partial class NotepadWindow : Form
     {
-        public string filePath = null;
-        public bool textChanged = false;
-        public int numberOfSymbols = 0;
+        private string? filePath = null;
+        private int numberOfSymbols = 0;
+        private bool textChanged = false;
 
+        /// <summary>
+        /// Флаг, указывающий что текст в блокноте поменялся
+        /// </summary>
+        public bool TextChanged
+        {
+            get => textChanged;
+            set
+            {
+                if (value)
+                {
+                    if (Text.ElementAt(Text.Length - 1) != '*')
+                    {
+                        Text += '*';
+                    }
+                }
+                else
+                {
+                    if (Text.ElementAt(Text.Length - 1) == '*')
+                    {
+                        Text = Text.Remove(Text.Length - 1);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Конструктор <see cref="NotepadWindow"/>
+        /// </summary>
         public NotepadWindow()
         {
             InitializeComponent();
             fontDialog.ShowColor = true;
             colorDialog.FullOpen = true;
-            colorDialog.Color = MainTextBox.BackColor;
+
+            Settings.SettingsChanged += x => MainTextBox.BackColor = x.BackColor;
+            Settings.SettingsChanged += x => MainTextBox.Font = x.Font;
+            Settings.SettingsChanged += x => MainTextBox.ForeColor = x.ForeColor;
+
+            LoadSettings();
+            var settings = Settings.GetInstance();
+            MainTextBox.BackColor = settings.BackColor;
+            MainTextBox.Font = settings.Font;
+            MainTextBox.ForeColor = settings.ForeColor;
+
+            colorDialog.Color = settings.BackColor;
+            fontDialog.Font = settings.Font;
+            fontDialog.Color = settings.ForeColor;
         }
-        private void FontViwe_Click(object sender, EventArgs e)
+
+        private void LoadSettings()
+        {
+            using (var fs = new FileStream(FileNames.SettingsFile, FileMode.OpenOrCreate, FileAccess.Read))
+            {
+                try
+                {
+                    var settingsData = JsonSerializer.Deserialize<UpdateSettings>(fs);
+                    Settings.UpdateSettings(settingsData);
+                }
+                catch { }
+            }
+        }
+
+        private void FontView_Click(object sender, EventArgs e)
         {
             if (fontDialog.ShowDialog() == DialogResult.Cancel)
             {
                 return;
             }
-            MainTextBox.Font = fontDialog.Font;
-            MainTextBox.ForeColor = fontDialog.Color;
+            var settings = Settings.GetInstance();
+            var updatedSettings = new UpdateSettings()
+            {
+                BackColor = settings.BackColor,
+                ForeColor = fontDialog.Color,
+                Font = fontDialog.Font,
+            };
+            Settings.UpdateSettings(updatedSettings);
         }
-        private void BackgroundColorViwe_Click(object sender, EventArgs e)
+
+        private void BackgroundColorView_Click(object sender, EventArgs e)
         {
             if (colorDialog.ShowDialog() == DialogResult.Cancel)
             {
                 return;
             }
-            MainTextBox.BackColor = colorDialog.Color;
+            var settings = Settings.GetInstance();
+            var updatedSettings = new UpdateSettings()
+            {
+                BackColor = colorDialog.Color,
+                ForeColor = settings.ForeColor,
+                Font = settings.Font,
+            };
+            Settings.UpdateSettings(updatedSettings);
         }
+
         private void NotepadForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (textChanged)
+            if (TextChanged)
             {
                 DialogResult message = MessageBox.Show(
                 "Сохранить текущий документ перед выходом из супер блокнота?",
                 "Выход из программы.",
-                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
                 if (message == DialogResult.Yes)
                 {
-                    if (filePath == null)
+                    if (filePath != null)
+                    {
+                        System.IO.File.WriteAllText(filePath, MainTextBox.Text);
+                    }
+                    else
                     {
                         if (SaveFileDialog.ShowDialog() == DialogResult.Cancel)
                         {
@@ -48,17 +128,27 @@ namespace notepad
                         }
                         System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
                     }
-                    else
-                    {
-                        System.IO.File.WriteAllText(filePath, MainTextBox.Text);
-                    }
                 }
                 else if (message == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                 }
             }
+            System.IO.File.Delete(FileNames.SettingsFile);
+            using (var fs = new FileStream(FileNames.SettingsFile, FileMode.OpenOrCreate))
+            {
+                var settings = Settings.GetInstance();
+                var savedSettings = new UpdateSettings
+                {
+                    BackColor = settings.BackColor,
+                    ForeColor = settings.ForeColor,
+                    Font = settings.Font,
+                };
+                JsonSerializer.Serialize(fs, savedSettings);
+                fs.Flush();
+            }
         }
+
         private void SafeAsFile_Click(object sender, EventArgs e)
         {
             if (SaveFileDialog.ShowDialog() == DialogResult.Cancel)
@@ -66,10 +156,11 @@ namespace notepad
                 return;
             }
             System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
-            filePath = OpenFileDialog.FileName;
-            this.Text = filePath;
-            textChanged = false;
+            filePath = SaveFileDialog.FileName;
+            Text = filePath;
+            TextChanged = false;
         }
+
         private void SafeFile_Click(object sender, EventArgs e)
         {
             if (filePath == null)
@@ -80,15 +171,15 @@ namespace notepad
                 }
                 System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
                 filePath = OpenFileDialog.FileName;
-                this.Text = filePath;
-                textChanged = false;
+                Text = filePath;
             }
             else
             {
                 System.IO.File.WriteAllText(filePath, MainTextBox.Text);
-                textChanged = false;
             }
+            TextChanged = false;
         }
+
         private void OpenFile_Click(object sender, EventArgs e)
         {
             if (OpenFileDialog.ShowDialog() == DialogResult.Cancel)
@@ -97,31 +188,44 @@ namespace notepad
             }
             MainTextBox.Text = System.IO.File.ReadAllText(OpenFileDialog.FileName);
             filePath = OpenFileDialog.FileName;
-            this.Text = filePath;
+            Text = filePath;
         }
+
         private void MainTextBox_TextChanged(object sender, EventArgs e)
         {
-            textChanged = true;
-            int Line;
-            int Column, ColumnOffset;
-            Line = MainTextBox.GetLineFromCharIndex(MainTextBox.SelectionStart);
-            ColumnOffset = Line;
-            Column = (MainTextBox.SelectionStart - ColumnOffset) - (MainTextBox.GetFirstCharIndexFromLine(Line) - ColumnOffset);
-            LineLable.Text = $"Строка {Line + 1}";
-            ColumnLable.Text = $"Столбец {Column + 1}";
+            if (!TextChanged)
+            {
+                TextChanged = true;
+            }
+            DisplayInputCursorPosition();
         }
-        private void timer_Tick(object sender, EventArgs e)
+
+        private void DisplayInputCursorPosition()
         {
-            int SymbolsPerMinute;
-            int Seconds = 3;
-            SymbolsPerMinute = (numberOfSymbols / Seconds) * 20;
-            SymbolsPerMinuteLable.Text = $"Символов в минуту: {SymbolsPerMinute};";
+            var position = MainTextBox.GetInputCursorPosition();
+            toolStripStatusLineLabel.Text = string.Format(StatusStripMessages.LinePattern, position.Line + 1);
+            toolStripStatusColumnLabel.Text = string.Format(StatusStripMessages.ColumnPattern, position.Column + 1);
+        }
+
+        private void DisplaySymbolsPerMinuteInfo()
+        {
+            int symbolsPerMinute;
+            int seconds = timer.Interval / 1000;
+            symbolsPerMinute = (numberOfSymbols / seconds) * (60 / seconds);
+            toolStripStatusSymbolsPerMinuteLabel.Text = string.Format(StatusStripMessages.SymbolsPerMinutePattern, symbolsPerMinute);
             numberOfSymbols = 0;
         }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            DisplaySymbolsPerMinuteInfo();
+        }
+
         private void MainTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             numberOfSymbols++;
         }
+
         private void NotepadWindow_Load(object sender, EventArgs e)
         {
             timer.Start();
