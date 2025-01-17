@@ -94,7 +94,7 @@
             File.DropDownItems.AddRange(new ToolStripItem[] { OpenFile, SafeFile, SafeAsFile, NewToolStripMenuItem, toolStripSeparator2, ExitToolStripMenuItem });
             File.Name = "File";
             File.Size = new Size(48, 20);
-            File.Text = "Файл";
+            File.Text = "&Файл";
             // 
             // OpenFile
             // 
@@ -204,14 +204,14 @@
             // FontViwe
             // 
             FontViwe.Name = "FontViwe";
-            FontViwe.Size = new Size(180, 22);
+            FontViwe.Size = new Size(129, 22);
             FontViwe.Text = "Шрифт";
             FontViwe.Click += FontView_Click;
             // 
             // BackgroundColorViwe
             // 
             BackgroundColorViwe.Name = "BackgroundColorViwe";
-            BackgroundColorViwe.Size = new Size(180, 22);
+            BackgroundColorViwe.Size = new Size(129, 22);
             BackgroundColorViwe.Text = "ЦветФона";
             BackgroundColorViwe.Click += BackgroundColorView_Click;
             // 
@@ -227,24 +227,28 @@
             ArrangeIconsToolStripMenuItem.Name = "ArrangeIconsToolStripMenuItem";
             ArrangeIconsToolStripMenuItem.Size = new Size(214, 22);
             ArrangeIconsToolStripMenuItem.Text = "Упорядочивание значков";
+            ArrangeIconsToolStripMenuItem.Click += ArrangeIconsToolStripMenuItem_Click;
             // 
             // CascadeToolStripMenuItem
             // 
             CascadeToolStripMenuItem.Name = "CascadeToolStripMenuItem";
             CascadeToolStripMenuItem.Size = new Size(214, 22);
             CascadeToolStripMenuItem.Text = "Каскад";
+            CascadeToolStripMenuItem.Click += CascadeToolStripMenuItem_Click;
             // 
             // TileHorizontalToolStripMenuItem
             // 
             TileHorizontalToolStripMenuItem.Name = "TileHorizontalToolStripMenuItem";
             TileHorizontalToolStripMenuItem.Size = new Size(214, 22);
             TileHorizontalToolStripMenuItem.Text = "Горизонтальная плитка";
+            TileHorizontalToolStripMenuItem.Click += TileHorizontalToolStripMenuItem_Click;
             // 
             // TileVerticalToolStripMenuItem
             // 
             TileVerticalToolStripMenuItem.Name = "TileVerticalToolStripMenuItem";
             TileVerticalToolStripMenuItem.Size = new Size(214, 22);
             TileVerticalToolStripMenuItem.Text = "Вертикальная плитка";
+            TileVerticalToolStripMenuItem.Click += TileVerticalToolStripMenuItem_Click;
             // 
             // QuestionToolStripMenuItem
             // 
@@ -314,6 +318,7 @@
             Controls.Add(MainTextBox);
             Controls.Add(Menu);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            IsMdiContainer = true;
             MainMenuStrip = Menu;
             MinimumSize = new Size(300, 400);
             Name = "NotepadWindow";

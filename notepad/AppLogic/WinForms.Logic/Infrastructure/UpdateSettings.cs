@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using WinForms.Logic.JsonConvertors;
 
-namespace WinForms.Logic;
+namespace WinForms.Logic.Infrastructure;
 
 /// <summary>
 /// Модель обновления настроек блокнота

@@ -1,6 +1,8 @@
 using System.Text.Json;
 using WinForms.Logic;
 using WinForms.Logic.Extensions;
+using WinForms.Logic.FilesLogic;
+using WinForms.Logic.Infrastructure;
 
 namespace notepad
 {
@@ -9,6 +11,7 @@ namespace notepad
         private string? filePath = null;
         private int numberOfSymbols = 0;
         private bool textChanged = false;
+        private int openDocuments = 0;
 
         /// <summary>
         /// Флаг, указывающий что текст в блокноте поменялся
@@ -234,7 +237,29 @@ namespace notepad
         private void новыйToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var newBlank = new Blank();
+            newBlank.DockName = $"Новый доумент {++openDocuments}";
+            newBlank.MdiParent = this;
             newBlank.Show();
+        }
+
+        private void ArrangeIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LayoutMdi(MdiLayout.ArrangeIcons);
+        }
+
+        private void CascadeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LayoutMdi(MdiLayout.Cascade);
+        }
+
+        private void TileHorizontalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LayoutMdi(MdiLayout.TileHorizontal);
+        }
+
+        private void TileVerticalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LayoutMdi(MdiLayout.TileVertical);
         }
     }
 }

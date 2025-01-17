@@ -1,4 +1,4 @@
-﻿namespace WinForms.Logic;
+﻿namespace WinForms.Logic.FilesLogic;
 
 /// <summary>
 /// Названия файлов
