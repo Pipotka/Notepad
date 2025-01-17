@@ -230,5 +230,11 @@ namespace notepad
         {
             timer.Start();
         }
+
+        private void новыйToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var newBlank = new Blank();
+            newBlank.Show();
+        }
     }
 }
