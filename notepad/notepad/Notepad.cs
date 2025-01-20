@@ -1,42 +1,15 @@
 using System.Text.Json;
-using WinForms.Logic;
-using WinForms.Logic.Extensions;
 using WinForms.Logic.FilesLogic;
 using WinForms.Logic.Infrastructure;
 
 namespace notepad
 {
+    /// <summary>
+    /// Блокнот
+    /// </summary>
     public partial class NotepadWindow : Form
     {
-        private string? filePath = null;
-        private int numberOfSymbols = 0;
-        private bool textChanged = false;
         private int openDocuments = 0;
-
-        /// <summary>
-        /// Флаг, указывающий что текст в блокноте поменялся
-        /// </summary>
-        public bool TextChanged
-        {
-            get => textChanged;
-            set
-            {
-                if (value)
-                {
-                    if (Text.ElementAt(Text.Length - 1) != '*')
-                    {
-                        Text += '*';
-                    }
-                }
-                else
-                {
-                    if (Text.ElementAt(Text.Length - 1) == '*')
-                    {
-                        Text = Text.Remove(Text.Length - 1);
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Конструктор <see cref="NotepadWindow"/>
@@ -47,16 +20,8 @@ namespace notepad
             fontDialog.ShowColor = true;
             colorDialog.FullOpen = true;
 
-            Settings.SettingsChanged += x => MainTextBox.BackColor = x.BackColor;
-            Settings.SettingsChanged += x => MainTextBox.Font = x.Font;
-            Settings.SettingsChanged += x => MainTextBox.ForeColor = x.ForeColor;
-
             LoadSettings();
             var settings = Settings.GetInstance();
-            MainTextBox.BackColor = settings.BackColor;
-            MainTextBox.Font = settings.Font;
-            MainTextBox.ForeColor = settings.ForeColor;
-
             colorDialog.Color = settings.BackColor;
             fontDialog.Font = settings.Font;
             fontDialog.Color = settings.ForeColor;
@@ -107,36 +72,10 @@ namespace notepad
             Settings.UpdateSettings(updatedSettings);
         }
 
-        private void NotepadForm_FormClosing(object sender, FormClosingEventArgs e)
+        private async void NotepadForm_FormClosingAsync(object sender, FormClosingEventArgs e)
         {
-            if (TextChanged)
-            {
-                DialogResult message = MessageBox.Show(
-                "Сохранить текущий документ перед выходом из супер блокнота?",
-                "Выход из программы.",
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question);
+            await SaveBlanks();
 
-                if (message == DialogResult.Yes)
-                {
-                    if (filePath != null)
-                    {
-                        System.IO.File.WriteAllText(filePath, MainTextBox.Text);
-                    }
-                    else
-                    {
-                        if (SaveFileDialog.ShowDialog() == DialogResult.Cancel)
-                        {
-                            return;
-                        }
-                        System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
-                    }
-                }
-                else if (message == DialogResult.Cancel)
-                {
-                    e.Cancel = true;
-                }
-            }
             System.IO.File.Delete(FileNames.SettingsFile);
             using (var fs = new FileStream(FileNames.SettingsFile, FileMode.OpenOrCreate))
             {
@@ -152,94 +91,42 @@ namespace notepad
             }
         }
 
-        private void SafeAsFile_Click(object sender, EventArgs e)
+        private async void SaveFile_Click(object sender, EventArgs e)
         {
-            if (SaveFileDialog.ShowDialog() == DialogResult.Cancel)
-            {
-                return;
-            }
-            System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
-            filePath = SaveFileDialog.FileName;
-            Text = filePath;
-            TextChanged = false;
+            await SaveBlanks();
         }
 
-        private void SafeFile_Click(object sender, EventArgs e)
+        private async Task SaveBlanks()
         {
-            if (filePath == null)
+            foreach (var blank in MdiChildren.OfType<Blank>())
             {
-                if (SaveFileDialog.ShowDialog() == DialogResult.Cancel)
-                {
-                    return;
-                }
-                System.IO.File.WriteAllText(SaveFileDialog.FileName, MainTextBox.Text);
-                filePath = OpenFileDialog.FileName;
-                Text = filePath;
+                await blank.SaveFile();
             }
-            else
-            {
-                System.IO.File.WriteAllText(filePath, MainTextBox.Text);
-            }
-            TextChanged = false;
         }
 
         private void OpenFile_Click(object sender, EventArgs e)
         {
-            if (OpenFileDialog.ShowDialog() == DialogResult.Cancel)
+            if (OpenFileDialog.ShowDialog() != DialogResult.Cancel)
             {
-                return;
+                var text = System.IO.File.ReadAllText(OpenFileDialog.FileName);
+                var blank = CreateNewBlank(filePath: OpenFileDialog.FileName, text: text);
             }
-            MainTextBox.Text = System.IO.File.ReadAllText(OpenFileDialog.FileName);
-            filePath = OpenFileDialog.FileName;
-            Text = filePath;
         }
 
-        private void MainTextBox_TextChanged(object sender, EventArgs e)
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!TextChanged)
-            {
-                TextChanged = true;
-            }
-            DisplayInputCursorPosition();
+            var newBlank = CreateNewBlank(title: $"Новый доумент {++openDocuments}");
+            newBlank.Show();
         }
 
-        private void DisplayInputCursorPosition()
-        {
-            var position = MainTextBox.GetInputCursorPosition();
-            toolStripStatusLineLabel.Text = string.Format(StatusStripMessages.LinePattern, position.Line + 1);
-            toolStripStatusColumnLabel.Text = string.Format(StatusStripMessages.ColumnPattern, position.Column + 1);
-        }
-
-        private void DisplaySymbolsPerMinuteInfo()
-        {
-            int symbolsPerMinute;
-            int seconds = timer.Interval / 1000;
-            symbolsPerMinute = (numberOfSymbols / seconds) * (60 / seconds);
-            toolStripStatusSymbolsPerMinuteLabel.Text = string.Format(StatusStripMessages.SymbolsPerMinutePattern, symbolsPerMinute);
-            numberOfSymbols = 0;
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            DisplaySymbolsPerMinuteInfo();
-        }
-
-        private void MainTextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            numberOfSymbols++;
-        }
-
-        private void NotepadWindow_Load(object sender, EventArgs e)
-        {
-            timer.Start();
-        }
-
-        private void новыйToolStripMenuItem_Click(object sender, EventArgs e)
+        private Blank CreateNewBlank(string? title = null, string? filePath = null, string? text = null)
         {
             var newBlank = new Blank();
-            newBlank.DockName = $"Новый доумент {++openDocuments}";
+            newBlank.DockName = title ?? string.Empty;
+            newBlank.FilePath = filePath;
+            newBlank.BlankText = text ?? string.Empty;
             newBlank.MdiParent = this;
-            newBlank.Show();
+            return newBlank;
         }
 
         private void ArrangeIconsToolStripMenuItem_Click(object sender, EventArgs e)

@@ -28,14 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(NotepadWindow));
-            MainTextBox = new TextBox();
             Menu = new MenuStrip();
             File = new ToolStripMenuItem();
             OpenFile = new ToolStripMenuItem();
             SafeFile = new ToolStripMenuItem();
-            SafeAsFile = new ToolStripMenuItem();
             NewToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator2 = new ToolStripSeparator();
             ExitToolStripMenuItem = new ToolStripMenuItem();
@@ -60,7 +57,6 @@
             colorDialog = new ColorDialog();
             SaveFileDialog = new SaveFileDialog();
             OpenFileDialog = new OpenFileDialog();
-            timer = new System.Windows.Forms.Timer(components);
             statusStrip = new StatusStrip();
             toolStripStatusSymbolsPerMinuteLabel = new ToolStripStatusLabel();
             toolStripStatusLineLabel = new ToolStripStatusLabel();
@@ -68,17 +64,6 @@
             Menu.SuspendLayout();
             statusStrip.SuspendLayout();
             SuspendLayout();
-            // 
-            // MainTextBox
-            // 
-            MainTextBox.Dock = DockStyle.Fill;
-            MainTextBox.Location = new Point(0, 24);
-            MainTextBox.Multiline = true;
-            MainTextBox.Name = "MainTextBox";
-            MainTextBox.Size = new Size(787, 501);
-            MainTextBox.TabIndex = 0;
-            MainTextBox.TextChanged += MainTextBox_TextChanged;
-            MainTextBox.KeyPress += MainTextBox_KeyPress;
             // 
             // Menu
             // 
@@ -91,7 +76,7 @@
             // 
             // File
             // 
-            File.DropDownItems.AddRange(new ToolStripItem[] { OpenFile, SafeFile, SafeAsFile, NewToolStripMenuItem, toolStripSeparator2, ExitToolStripMenuItem });
+            File.DropDownItems.AddRange(new ToolStripItem[] { OpenFile, SafeFile, NewToolStripMenuItem, toolStripSeparator2, ExitToolStripMenuItem });
             File.Name = "File";
             File.Size = new Size(48, 20);
             File.Text = "&Файл";
@@ -100,7 +85,7 @@
             // 
             OpenFile.Name = "OpenFile";
             OpenFile.ShortcutKeys = Keys.Control | Keys.O;
-            OpenFile.Size = new Size(235, 22);
+            OpenFile.Size = new Size(208, 22);
             OpenFile.Text = "Открыть...";
             OpenFile.Click += OpenFile_Click;
             // 
@@ -108,38 +93,30 @@
             // 
             SafeFile.Name = "SafeFile";
             SafeFile.ShortcutKeys = Keys.Control | Keys.S;
-            SafeFile.Size = new Size(235, 22);
+            SafeFile.Size = new Size(208, 22);
             SafeFile.Text = "Сохранить";
-            SafeFile.Click += SafeFile_Click;
-            // 
-            // SafeAsFile
-            // 
-            SafeAsFile.Name = "SafeAsFile";
-            SafeAsFile.ShortcutKeys = Keys.Control | Keys.Shift | Keys.S;
-            SafeAsFile.Size = new Size(235, 22);
-            SafeAsFile.Text = "Сохранить как...";
-            SafeAsFile.Click += SafeAsFile_Click;
+            SafeFile.Click += SaveFile_Click;
             // 
             // NewToolStripMenuItem
             // 
             NewToolStripMenuItem.Name = "NewToolStripMenuItem";
             NewToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+N";
             NewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
-            NewToolStripMenuItem.Size = new Size(235, 22);
+            NewToolStripMenuItem.Size = new Size(208, 22);
             NewToolStripMenuItem.Text = "Создать новый...";
-            NewToolStripMenuItem.Click += новыйToolStripMenuItem_Click;
+            NewToolStripMenuItem.Click += newToolStripMenuItem_Click;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(232, 6);
+            toolStripSeparator2.Size = new Size(205, 6);
             // 
             // ExitToolStripMenuItem
             // 
             ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
             ExitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
             ExitToolStripMenuItem.ShortcutKeys = Keys.Alt | Keys.F4;
-            ExitToolStripMenuItem.Size = new Size(235, 22);
+            ExitToolStripMenuItem.Size = new Size(208, 22);
             ExitToolStripMenuItem.Text = "Выйти";
             // 
             // EditToolStripMenuItem
@@ -277,11 +254,6 @@
             OpenFileDialog.Filter = "Текстовые файлы(*.txt)|*.txt";
             OpenFileDialog.InitialDirectory = "Рабочий стол";
             // 
-            // timer
-            // 
-            timer.Interval = 3000;
-            timer.Tick += timer_Tick;
-            // 
             // statusStrip
             // 
             statusStrip.Items.AddRange(new ToolStripItem[] { toolStripStatusSymbolsPerMinuteLabel, toolStripStatusLineLabel, toolStripStatusColumnLabel });
@@ -315,7 +287,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(787, 525);
             Controls.Add(statusStrip);
-            Controls.Add(MainTextBox);
             Controls.Add(Menu);
             Icon = (Icon)resources.GetObject("$this.Icon");
             IsMdiContainer = true;
@@ -323,8 +294,7 @@
             MinimumSize = new Size(300, 400);
             Name = "NotepadWindow";
             Text = "Notepad";
-            FormClosing += NotepadForm_FormClosing;
-            Load += NotepadWindow_Load;
+            FormClosing += NotepadForm_FormClosingAsync;
             Menu.ResumeLayout(false);
             Menu.PerformLayout();
             statusStrip.ResumeLayout(false);
@@ -334,13 +304,10 @@
         }
 
         #endregion
-
-        private TextBox MainTextBox;
         private MenuStrip Menu;
         private ToolStripMenuItem File;
         private ToolStripMenuItem OpenFile;
         private ToolStripMenuItem SafeFile;
-        private ToolStripMenuItem SafeAsFile;
         private ToolStripMenuItem Viwe;
         private ToolStripMenuItem FontViwe;
         private ToolStripMenuItem BackgroundColorViwe;
@@ -348,7 +315,6 @@
         private ColorDialog colorDialog;
         private SaveFileDialog SaveFileDialog;
         private OpenFileDialog OpenFileDialog;
-        private System.Windows.Forms.Timer timer;
         private StatusStrip statusStrip;
         private ToolStripStatusLabel toolStripStatusSymbolsPerMinuteLabel;
         private ToolStripStatusLabel toolStripStatusLineLabel;
