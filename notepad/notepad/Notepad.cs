@@ -34,7 +34,10 @@ namespace notepad
                 try
                 {
                     var settingsData = JsonSerializer.Deserialize<UpdateSettings>(fs);
-                    Settings.UpdateSettings(settingsData);
+                    if (settingsData != null)
+                    {
+                        Settings.UpdateSettings(settingsData);
+                    }
                 }
                 catch { }
             }
@@ -74,8 +77,38 @@ namespace notepad
 
         private async void NotepadForm_FormClosingAsync(object sender, FormClosingEventArgs e)
         {
-            await SaveBlanks();
+            var isClosWindow = MessageBox.Show("Вы уверены что хотите выйти зи блокнота?", "Закрытие блокнота", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (isClosWindow == DialogResult.Yes)
+            {
+                var hasChanged = false;
+                foreach (var blank in MdiChildren.OfType<Blank>())
+                {
+                    if (blank.TextChanged)
+                    {
+                        hasChanged = true;
+                        break;
+                    }
+                }
+                if (hasChanged)
+                {
+                    var isSaveChanges = MessageBox.Show("Сохранить изменения?", "Закрытие блокнота", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (isSaveChanges == DialogResult.Yes)
+                    {
+                        await SaveBlanks();
 
+                    }
+                }
+
+                await SaveSettings();
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private async Task SaveSettings()
+        {
             System.IO.File.Delete(FileNames.SettingsFile);
             using (var fs = new FileStream(FileNames.SettingsFile, FileMode.OpenOrCreate))
             {
@@ -100,7 +133,22 @@ namespace notepad
         {
             foreach (var blank in MdiChildren.OfType<Blank>())
             {
-                await blank.SaveFile();
+                if (blank.TextChanged)
+                {
+                    if (!string.IsNullOrWhiteSpace(blank.FilePath))
+                    {
+                        SaveFileDialog.FileName = blank.FilePath;
+                        await blank.SaveFile(blank.FilePath);
+                    }
+                    else
+                    {
+                        SaveFileDialog.FileName = blank.DockName;
+                        if (SaveFileDialog.ShowDialog() != DialogResult.Cancel)
+                        {
+                            await blank.SaveFile(SaveFileDialog.FileName);
+                        }
+                    }
+                }
             }
         }
 
@@ -110,12 +158,13 @@ namespace notepad
             {
                 var text = System.IO.File.ReadAllText(OpenFileDialog.FileName);
                 var blank = CreateNewBlank(filePath: OpenFileDialog.FileName, text: text);
+                blank.Show();
             }
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var newBlank = CreateNewBlank(title: $"Новый доумент {++openDocuments}");
+            var newBlank = CreateNewBlank(title: $"Новый документ {++openDocuments}");
             newBlank.Show();
         }
 
@@ -147,6 +196,41 @@ namespace notepad
         private void TileVerticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LayoutMdi(MdiLayout.TileVertical);
+        }
+
+        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frm = (Blank)this.ActiveMdiChild;
+            frm?.Cut();
+        }
+
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frm = (Blank)this.ActiveMdiChild;
+            frm?.Copy();
+        }
+
+        private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frm = (Blank)this.ActiveMdiChild;
+            frm?.Paste();
+        }
+
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frm = (Blank)this.ActiveMdiChild;
+            frm?.Delete();
+        }
+
+        private void SelectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frm = (Blank)this.ActiveMdiChild;
+            frm?.SelectAll();
+        }
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

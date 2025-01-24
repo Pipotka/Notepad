@@ -13,6 +13,7 @@ namespace notepad
         private string? filePath = null;
         private int numberOfSymbols = 0;
         private bool textChanged = false;
+        private string bufferText = string.Empty;
 
         /// <summary>
         /// Флаг, указывающий что текст в блокноте поменялся
@@ -93,54 +94,56 @@ namespace notepad
             richTextBox.ForeColor = settings.ForeColor;
         }
 
+        /// <summary>
+        /// Сохраняет данные в файл
+        /// </summary>
+        public async Task SaveFile(string saveFileName)
+        {
+            if (string.IsNullOrWhiteSpace(saveFileName))
+            {
+                FilePath = saveFileName;
+                await File.WriteAllTextAsync(filePath!, richTextBox.Text);
+            }
+        }
+
+        /// <summary>
+        /// Вырезание текста
+        /// </summary>
+        public void Cut()
+        {
+            bufferText = richTextBox.SelectedText;
+            richTextBox.SelectedText = string.Empty;
+        }
+
+        /// <summary>
+        /// Копирование текста
+        /// </summary>
+        public void Copy()
+         => bufferText = richTextBox.SelectedText;
+
+        /// <summary>
+        /// Вставка текста
+        /// </summary>
+        public void Paste()
+            => richTextBox.SelectedText = bufferText;
+
+        /// <summary>
+        /// Выделить весь текст
+        /// </summary>
+        public void SelectAll()
+            => richTextBox.SelectAll();
+
+        /// <summary>
+        /// Удалить
+        /// </summary>
+        public void Delete()
+            => richTextBox.SelectedText = string.Empty;
+
         private void SettingsUpdaed(Settings settings)
         {
             richTextBox.BackColor = settings.BackColor;
             richTextBox.Font = settings.Font;
             richTextBox.ForeColor = settings.ForeColor;
-        }
-
-        private async void Blank_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (TextChanged)
-            {
-                DialogResult message = MessageBox.Show(
-                "Сохранить текущий документ перед закрытием бланка?",
-                "Закрытие бланка.",
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question);
-
-                if (message == DialogResult.Yes)
-                {
-                    await SaveFile();
-                }
-                else if (message == DialogResult.Cancel)
-                {
-                    e.Cancel = true;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Сохраняет данные в файл
-        /// </summary>
-        public async Task SaveFile()
-        {
-            if (TextChanged)
-            {
-                if (filePath != null)
-                {
-                    await File.WriteAllTextAsync(filePath, richTextBox.Text);
-                }
-                else
-                {
-                    if (saveFileDialog.ShowDialog() != DialogResult.Cancel)
-                    {
-                        await File.WriteAllTextAsync(saveFileDialog.FileName, richTextBox.Text);
-                        FilePath = saveFileDialog.FileName;
-                    }
-                }
-            }
         }
 
         private void Blank_FormClosed(object sender, FormClosedEventArgs e)
@@ -195,5 +198,20 @@ namespace notepad
         {
             numberOfSymbols++;
         }
+
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
+            => Delete();
+
+        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
+            => Cut();
+
+        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
+            => Copy();
+
+        private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
+            => Paste();
+
+        private void SelectAllToolStripMenuItem_Click(object sender, EventArgs e)
+            => SelectAll();
     }
 }
