@@ -173,7 +173,7 @@ namespace notepad
             var newBlank = new Blank();
             newBlank.DockName = title ?? string.Empty;
             newBlank.FilePath = filePath;
-            newBlank.BlankText = text ?? string.Empty;
+            newBlank.RichTextBox.Text = text ?? string.Empty;
             newBlank.MdiParent = this;
             return newBlank;
         }
@@ -200,37 +200,65 @@ namespace notepad
 
         private void CutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var frm = (Blank)this.ActiveMdiChild;
-            frm?.Cut();
+            if (ActiveMdiChild is Blank blank)
+            {
+                blank.Cut();
+            }
         }
 
         private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var frm = (Blank)this.ActiveMdiChild;
-            frm?.Copy();
+            if (ActiveMdiChild is Blank blank)
+            {
+                blank.Copy();
+            }
         }
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var frm = (Blank)this.ActiveMdiChild;
-            frm?.Paste();
+            if (ActiveMdiChild is Blank blank)
+            {
+                blank.Paste();
+            }
         }
 
         private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var frm = (Blank)this.ActiveMdiChild;
-            frm?.Delete();
+            if (ActiveMdiChild is Blank blank)
+            {
+                blank.Delete();
+            }
         }
 
         private void SelectAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var frm = (Blank)this.ActiveMdiChild;
-            frm?.SelectAll();
+            if (ActiveMdiChild is Blank blank)
+            {
+                blank.SelectAll();
+            }
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void findToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var findForm = new FindForm();
+            if (findForm.ShowDialog(this) == DialogResult.OK)
+            {
+                if (ActiveMdiChild is Blank blank)
+                {
+                    var start = blank.RichTextBox.SelectionStart;
+                    blank.RichTextBox.Find(findForm.FindText, findForm.FindCondition);
+                }
+            }
+        }
+
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new About().ShowDialog();
         }
     }
 }

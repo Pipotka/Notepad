@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            richTextBox = new RichTextBox();
+            RichTextBox = new RichTextBox();
             contextMenuStrip = new ContextMenuStrip(components);
             CutToolStripMenuItem = new ToolStripMenuItem();
             CopyToolStripMenuItem = new ToolStripMenuItem();
@@ -46,19 +46,19 @@
             statusStrip.SuspendLayout();
             SuspendLayout();
             // 
-            // richTextBox
+            // RichTextBox
             // 
-            richTextBox.BorderStyle = BorderStyle.None;
-            richTextBox.ContextMenuStrip = contextMenuStrip;
-            richTextBox.Dock = DockStyle.Fill;
-            richTextBox.Location = new Point(0, 0);
-            richTextBox.Name = "richTextBox";
-            richTextBox.Size = new Size(800, 450);
-            richTextBox.TabIndex = 0;
-            richTextBox.Text = "";
-            richTextBox.SelectionChanged += richTextBox_SelectionChanged;
-            richTextBox.TextChanged += richTextBox_TextChanged;
-            richTextBox.KeyPress += richTextBox_KeyPress;
+            RichTextBox.BorderStyle = BorderStyle.None;
+            RichTextBox.ContextMenuStrip = contextMenuStrip;
+            RichTextBox.Dock = DockStyle.Fill;
+            RichTextBox.Location = new Point(0, 0);
+            RichTextBox.Name = "RichTextBox";
+            RichTextBox.Size = new Size(800, 450);
+            RichTextBox.TabIndex = 0;
+            RichTextBox.Text = "";
+            RichTextBox.SelectionChanged += richTextBox_SelectionChanged;
+            RichTextBox.TextChanged += richTextBox_TextChanged;
+            RichTextBox.KeyPress += richTextBox_KeyPress;
             // 
             // contextMenuStrip
             // 
@@ -159,7 +159,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(statusStrip);
-            Controls.Add(richTextBox);
+            Controls.Add(RichTextBox);
             Name = "Blank";
             Text = "Blank";
             WindowState = FormWindowState.Maximized;
@@ -173,8 +173,6 @@
         }
 
         #endregion
-
-        private RichTextBox richTextBox;
         private System.Windows.Forms.Timer timer;
         private StatusStrip statusStrip;
         private ToolStripStatusLabel toolStripStatusSymbolsPerMinuteLabel;
@@ -187,5 +185,6 @@
         private ToolStripMenuItem DeleteToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem SelectAllToolStripMenuItem;
+        public RichTextBox RichTextBox;
     }
 }

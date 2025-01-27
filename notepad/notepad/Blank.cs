@@ -71,15 +71,6 @@ namespace notepad
         }
 
         /// <summary>
-        /// Текст бланка
-        /// </summary>
-        public string BlankText
-        {
-            get => richTextBox.Text;
-            set => richTextBox.Text = value;
-        }
-
-        /// <summary>
         /// Конструктор <see cref="Blank"/>
         /// </summary>
         public Blank()
@@ -89,9 +80,9 @@ namespace notepad
             Settings.SettingsChanged += SettingsUpdaed;
 
             var settings = Settings.GetInstance();
-            richTextBox.BackColor = settings.BackColor;
-            richTextBox.Font = settings.Font;
-            richTextBox.ForeColor = settings.ForeColor;
+            RichTextBox.BackColor = settings.BackColor;
+            RichTextBox.Font = settings.Font;
+            RichTextBox.ForeColor = settings.ForeColor;
         }
 
         /// <summary>
@@ -102,7 +93,7 @@ namespace notepad
             if (string.IsNullOrWhiteSpace(saveFileName))
             {
                 FilePath = saveFileName;
-                await File.WriteAllTextAsync(filePath!, richTextBox.Text);
+                await File.WriteAllTextAsync(filePath!, RichTextBox.Text);
             }
         }
 
@@ -111,39 +102,39 @@ namespace notepad
         /// </summary>
         public void Cut()
         {
-            bufferText = richTextBox.SelectedText;
-            richTextBox.SelectedText = string.Empty;
+            bufferText = RichTextBox.SelectedText;
+            RichTextBox.SelectedText = string.Empty;
         }
 
         /// <summary>
         /// Копирование текста
         /// </summary>
         public void Copy()
-         => bufferText = richTextBox.SelectedText;
+         => bufferText = RichTextBox.SelectedText;
 
         /// <summary>
         /// Вставка текста
         /// </summary>
         public void Paste()
-            => richTextBox.SelectedText = bufferText;
+            => RichTextBox.SelectedText = bufferText;
 
         /// <summary>
         /// Выделить весь текст
         /// </summary>
         public void SelectAll()
-            => richTextBox.SelectAll();
+            => RichTextBox.SelectAll();
 
         /// <summary>
         /// Удалить
         /// </summary>
         public void Delete()
-            => richTextBox.SelectedText = string.Empty;
+            => RichTextBox.SelectedText = string.Empty;
 
         private void SettingsUpdaed(Settings settings)
         {
-            richTextBox.BackColor = settings.BackColor;
-            richTextBox.Font = settings.Font;
-            richTextBox.ForeColor = settings.ForeColor;
+            RichTextBox.BackColor = settings.BackColor;
+            RichTextBox.Font = settings.Font;
+            RichTextBox.ForeColor = settings.ForeColor;
         }
 
         private void Blank_FormClosed(object sender, FormClosedEventArgs e)
@@ -167,7 +158,7 @@ namespace notepad
 
         private void DisplayInputCursorPosition()
         {
-            var position = richTextBox.GetInputCursorPosition();
+            var position = RichTextBox.GetInputCursorPosition();
             toolStripStatusLineLabel.Text = string.Format(StatusStripMessages.LinePattern, position.Line + 1);
             toolStripStatusColumnLabel.Text = string.Format(StatusStripMessages.ColumnPattern, position.Column + 1);
         }

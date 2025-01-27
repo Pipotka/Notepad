@@ -38,27 +38,27 @@
             // btnOK
             // 
             btnOK.DialogResult = DialogResult.OK;
-            btnOK.Location = new Point(26, 100);
+            btnOK.Location = new Point(225, 12);
             btnOK.Name = "btnOK";
             btnOK.Size = new Size(75, 23);
-            btnOK.TabIndex = 0;
+            btnOK.TabIndex = 1;
             btnOK.Text = "&OK";
             btnOK.UseVisualStyleBackColor = true;
             // 
             // btnCancel
             // 
             btnCancel.DialogResult = DialogResult.Cancel;
-            btnCancel.Location = new Point(193, 100);
+            btnCancel.Location = new Point(225, 41);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 23);
-            btnCancel.TabIndex = 1;
+            btnCancel.TabIndex = 4;
             btnCancel.Text = "&Cancel";
             btnCancel.UseVisualStyleBackColor = true;
             // 
             // cbMatchCase
             // 
             cbMatchCase.AutoSize = true;
-            cbMatchCase.Location = new Point(26, 11);
+            cbMatchCase.Location = new Point(12, 41);
             cbMatchCase.Name = "cbMatchCase";
             cbMatchCase.Size = new Size(130, 19);
             cbMatchCase.TabIndex = 2;
@@ -68,7 +68,7 @@
             // cbMatchWhole
             // 
             cbMatchWhole.AutoSize = true;
-            cbMatchWhole.Location = new Point(26, 36);
+            cbMatchWhole.Location = new Point(12, 60);
             cbMatchWhole.Name = "cbMatchWhole";
             cbMatchWhole.Size = new Size(158, 19);
             cbMatchWhole.TabIndex = 3;
@@ -77,16 +77,16 @@
             // 
             // txtFind
             // 
-            txtFind.Location = new Point(26, 61);
+            txtFind.Location = new Point(12, 12);
             txtFind.Name = "txtFind";
             txtFind.Size = new Size(192, 23);
-            txtFind.TabIndex = 4;
+            txtFind.TabIndex = 0;
             // 
             // FindForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(312, 135);
+            ClientSize = new Size(312, 79);
             Controls.Add(txtFind);
             Controls.Add(cbMatchWhole);
             Controls.Add(cbMatchCase);
