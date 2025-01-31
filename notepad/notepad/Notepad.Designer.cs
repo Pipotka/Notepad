@@ -256,7 +256,7 @@
             // AboutToolStripMenuItem
             // 
             AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
-            AboutToolStripMenuItem.Size = new Size(180, 22);
+            AboutToolStripMenuItem.Size = new Size(158, 22);
             AboutToolStripMenuItem.Text = "О программе...";
             AboutToolStripMenuItem.Click += AboutToolStripMenuItem_Click;
             // 
@@ -290,6 +290,8 @@
             newToolStripButton.ImageTransparentColor = Color.Magenta;
             newToolStripButton.Name = "newToolStripButton";
             newToolStripButton.Size = new Size(23, 22);
+            newToolStripButton.ToolTipText = "новый документ";
+            newToolStripButton.Click += newToolStripButton_Click;
             // 
             // openToolStripButton
             // 
@@ -299,6 +301,8 @@
             openToolStripButton.Name = "openToolStripButton";
             openToolStripButton.Size = new Size(23, 22);
             openToolStripButton.Text = "toolStripButton2";
+            openToolStripButton.ToolTipText = "открыть";
+            openToolStripButton.Click += openToolStripButton_Click;
             // 
             // saveToolStripButton
             // 
@@ -308,6 +312,8 @@
             saveToolStripButton.Name = "saveToolStripButton";
             saveToolStripButton.Size = new Size(23, 22);
             saveToolStripButton.Text = "toolStripButton3";
+            saveToolStripButton.ToolTipText = "сохранить";
+            saveToolStripButton.Click += saveToolStripButton_Click;
             // 
             // cutToolStripButton
             // 
@@ -317,6 +323,8 @@
             cutToolStripButton.Name = "cutToolStripButton";
             cutToolStripButton.Size = new Size(23, 22);
             cutToolStripButton.Text = "toolStripButton4";
+            cutToolStripButton.ToolTipText = "вырезать текст";
+            cutToolStripButton.Click += cutToolStripButton_Click;
             // 
             // copyToolStripButton
             // 
@@ -326,6 +334,8 @@
             copyToolStripButton.Name = "copyToolStripButton";
             copyToolStripButton.Size = new Size(23, 22);
             copyToolStripButton.Text = "toolStripButton5";
+            copyToolStripButton.ToolTipText = "скопировать текст";
+            copyToolStripButton.Click += copyToolStripButton_Click;
             // 
             // pasteToolStripButton
             // 
@@ -335,6 +345,8 @@
             pasteToolStripButton.Name = "pasteToolStripButton";
             pasteToolStripButton.Size = new Size(23, 22);
             pasteToolStripButton.Text = "toolStripButton6";
+            pasteToolStripButton.ToolTipText = "вставить текст";
+            pasteToolStripButton.Click += pasteToolStripButton_Click;
             // 
             // NotepadWindow
             // 

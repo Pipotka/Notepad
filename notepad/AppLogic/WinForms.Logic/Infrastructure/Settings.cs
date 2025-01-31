@@ -37,6 +37,11 @@ public sealed class Settings
     public Color ForeColor { get; private set; } = Color.Black;
 
     /// <summary>
+    /// Расположение окон
+    /// </summary>
+    public MdiLayout MdiLayout { get; private set; } = MdiLayout.TileHorizontal;
+
+    /// <summary>
     /// Возвращает <see cref="Settings"/>
     /// </summary>
     public static Settings GetInstance()
@@ -49,10 +54,10 @@ public sealed class Settings
     /// </summary>
     public static void UpdateSettings(UpdateSettings update)
     {
-        var oldSettings = lazySettings.Value;
-        oldSettings.BackColor = update.BackColor;
-        oldSettings.ForeColor = update.ForeColor;
-        oldSettings.Font = update.Font;
+        lazySettings.Value.BackColor = update.BackColor;
+        lazySettings.Value.ForeColor = update.ForeColor;
+        lazySettings.Value.Font = update.Font;
+        lazySettings.Value.MdiLayout = update.MdiLayout;
 
         SettingsChanged?.Invoke(lazySettings.Value);
     }

@@ -11,6 +11,8 @@ namespace notepad
     {
         private int openDocuments = 0;
 
+        private MdiLayout mdiLayout = MdiLayout.Cascade;
+
         /// <summary>
         /// Конструктор <see cref="NotepadWindow"/>
         /// </summary>
@@ -25,6 +27,7 @@ namespace notepad
             colorDialog.Color = settings.BackColor;
             fontDialog.Font = settings.Font;
             fontDialog.Color = settings.ForeColor;
+            UpdateMdiLayout(settings.MdiLayout);
         }
 
         private void LoadSettings()
@@ -41,6 +44,12 @@ namespace notepad
                 }
                 catch { }
             }
+        }
+
+        private void UpdateMdiLayout(MdiLayout mdiLayout)
+        {
+            this.mdiLayout = mdiLayout;
+            LayoutMdi(mdiLayout);
         }
 
         private void FontView_Click(object sender, EventArgs e)
@@ -77,13 +86,13 @@ namespace notepad
 
         private async void NotepadForm_FormClosingAsync(object sender, FormClosingEventArgs e)
         {
-            var isClosWindow = MessageBox.Show("Вы уверены что хотите выйти зи блокнота?", "Закрытие блокнота", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var isClosWindow = MessageBox.Show("Вы уверены что хотите выйти из блокнота?", "Закрытие блокнота", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (isClosWindow == DialogResult.Yes)
             {
                 var hasChanged = false;
                 foreach (var blank in MdiChildren.OfType<Blank>())
                 {
-                    if (blank.TextChanged)
+                    if (blank.IsTextChanged)
                     {
                         hasChanged = true;
                         break;
@@ -119,7 +128,7 @@ namespace notepad
                     ForeColor = settings.ForeColor,
                     Font = settings.Font,
                 };
-                JsonSerializer.Serialize(fs, savedSettings);
+                await JsonSerializer.SerializeAsync(fs, savedSettings);
                 fs.Flush();
             }
         }
@@ -133,7 +142,7 @@ namespace notepad
         {
             foreach (var blank in MdiChildren.OfType<Blank>())
             {
-                if (blank.TextChanged)
+                if (blank.IsTextChanged)
                 {
                     if (!string.IsNullOrWhiteSpace(blank.FilePath))
                     {
@@ -154,18 +163,30 @@ namespace notepad
 
         private void OpenFile_Click(object sender, EventArgs e)
         {
+            OpenNewBlankFromFile();
+        }
+
+        private void OpenNewBlankFromFile()
+        {
             if (OpenFileDialog.ShowDialog() != DialogResult.Cancel)
             {
                 var text = System.IO.File.ReadAllText(OpenFileDialog.FileName);
                 var blank = CreateNewBlank(filePath: OpenFileDialog.FileName, text: text);
                 blank.Show();
             }
+            UpdateMdiLayout(mdiLayout);
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            OpenNewBlank();
+        }
+
+        private void OpenNewBlank()
+        {
             var newBlank = CreateNewBlank(title: $"Новый документ {++openDocuments}");
             newBlank.Show();
+            UpdateMdiLayout(mdiLayout);
         }
 
         private Blank CreateNewBlank(string? title = null, string? filePath = null, string? text = null)
@@ -180,25 +201,30 @@ namespace notepad
 
         private void ArrangeIconsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LayoutMdi(MdiLayout.ArrangeIcons);
+            UpdateMdiLayout(MdiLayout.ArrangeIcons);
         }
 
         private void CascadeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LayoutMdi(MdiLayout.Cascade);
+            UpdateMdiLayout(MdiLayout.Cascade);
         }
 
         private void TileHorizontalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LayoutMdi(MdiLayout.TileHorizontal);
+            UpdateMdiLayout(MdiLayout.TileHorizontal);
         }
 
         private void TileVerticalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LayoutMdi(MdiLayout.TileVertical);
+            UpdateMdiLayout(MdiLayout.TileVertical);
         }
 
         private void CutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CutFromBlank();
+        }
+
+        private void CutFromBlank()
         {
             if (ActiveMdiChild is Blank blank)
             {
@@ -208,6 +234,11 @@ namespace notepad
 
         private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            CopyFromBlank();
+        }
+
+        private void CopyFromBlank()
+        {
             if (ActiveMdiChild is Blank blank)
             {
                 blank.Copy();
@@ -215,6 +246,11 @@ namespace notepad
         }
 
         private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PasteInBlank();
+        }
+
+        private void PasteInBlank()
         {
             if (ActiveMdiChild is Blank blank)
             {
@@ -259,6 +295,36 @@ namespace notepad
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new About().ShowDialog();
+        }
+
+        private void newToolStripButton_Click(object sender, EventArgs e)
+        {
+            OpenNewBlank();
+        }
+
+        private void openToolStripButton_Click(object sender, EventArgs e)
+        {
+            OpenNewBlankFromFile();
+        }
+
+        private async void saveToolStripButton_Click(object sender, EventArgs e)
+        {
+            await SaveBlanks();
+        }
+
+        private void cutToolStripButton_Click(object sender, EventArgs e)
+        {
+            CutFromBlank();
+        }
+
+        private void copyToolStripButton_Click(object sender, EventArgs e)
+        {
+            CopyFromBlank();
+        }
+
+        private void pasteToolStripButton_Click(object sender, EventArgs e)
+        {
+            PasteInBlank();
         }
     }
 }

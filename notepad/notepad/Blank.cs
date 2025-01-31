@@ -18,25 +18,26 @@ namespace notepad
         /// <summary>
         /// Флаг, указывающий что текст в блокноте поменялся
         /// </summary>
-        public bool TextChanged
+        public bool IsTextChanged
         {
             get => textChanged;
             set
             {
                 if (value)
                 {
-                    if (Text.ElementAt(Text.Length - 1) != '*')
+                    if (Text.ElementAt(Text.Length - 1) != '*' && !textChanged)
                     {
                         Text += '*';
                     }
                 }
                 else
                 {
-                    if (Text.ElementAt(Text.Length - 1) == '*')
+                    if (Text.ElementAt(Text.Length - 1) == '*' && textChanged)
                     {
                         Text = Text.Remove(Text.Length - 1);
                     }
                 }
+                textChanged = value;
             }
         }
 
@@ -90,10 +91,11 @@ namespace notepad
         /// </summary>
         public async Task SaveFile(string saveFileName)
         {
-            if (string.IsNullOrWhiteSpace(saveFileName))
+            if (!string.IsNullOrWhiteSpace(saveFileName))
             {
                 FilePath = saveFileName;
                 await File.WriteAllTextAsync(filePath!, RichTextBox.Text);
+                IsTextChanged = false;
             }
         }
 
@@ -149,10 +151,6 @@ namespace notepad
 
         private void richTextBox_SelectionChanged(object sender, EventArgs e)
         {
-            if (!TextChanged)
-            {
-                TextChanged = true;
-            }
             DisplayInputCursorPosition();
         }
 
@@ -165,9 +163,9 @@ namespace notepad
 
         private void richTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (!TextChanged)
+            if (!IsTextChanged)
             {
-                TextChanged = true;
+                IsTextChanged = true;
             }
         }
 

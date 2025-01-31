@@ -27,6 +27,11 @@ public class UpdateSettings
     public Color ForeColor { get; set; } = Color.Black;
 
     /// <summary>
+    /// Расположение окон
+    /// </summary>
+    public MdiLayout MdiLayout { get; set; } = MdiLayout.TileHorizontal;
+
+    /// <summary>
     /// Конструктор <see cref="UpdateSettings"/>
     /// </summary>
     public UpdateSettings() { }
@@ -35,10 +40,11 @@ public class UpdateSettings
     /// Параметризованный конструктор <see cref="UpdateSettings"/>
     /// </summary>
     [JsonConstructor]
-    public UpdateSettings(Color backColor, Font font, Color foreColor)
+    public UpdateSettings(Color backColor, Font font, Color foreColor, MdiLayout mdiLayout)
     {
         BackColor = backColor;
         Font = font;
         ForeColor = foreColor;
+        MdiLayout = mdiLayout;
     }
 }
